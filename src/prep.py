@@ -1,10 +1,11 @@
 """
 Prepare for a new day of AoC.
 (1) Create a dayNN.py file for the code.
-(2) Create a dayNN.txt file for the puzzle input text.
+(2) Download puzzle input and create a dayNN.txt file.
 """
 import argparse
 import os
+from argparse import BooleanOptionalAction
 from pathlib import Path
 from string import Template
 
@@ -35,8 +36,8 @@ if __name__ == "__main__":
 
 url_template = Template('https://adventofcode.com/2025/day/$day/input')
 
+
 load_dotenv()
-print(os.environ.get("ADVENT_OF_CODE"))
 
 
 def download(url: str) -> str | None:
@@ -52,24 +53,38 @@ def download(url: str) -> str | None:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Prepare for a new day of AoC (1...12).")
     parser.add_argument("day", metavar="DAY", type=int, choices=range(1, 13))
+    parser.add_argument(
+        "-d", "--download",
+        action="store_true",
+        default=False,
+        help="option flag: if set, get your puzzle input (default=not set)")
     args = parser.parse_args()
+
     prog = Path(f"day{args.day:02d}.py")
+
     if prog.exists():
         print(f"File exists: {prog.as_posix()}, did not overwrite")
     else:
         prog.write_text(template.substitute(day=args.day))
         print(f"New file: {prog.as_posix()}")
+
     data = prog.with_suffix(".txt")
+
     if data.exists():
         print(f"File exists: {data.as_posix()}, did not overwrite")
     else:
-        text = download(url_template.substitute(day=args.day))
-        if text:
+        if args.download:
+            text = download(url_template.substitute(day=args.day))
+        else:
+            text = ""
+        if text and text != "":
             data.write_text(text)
             print(f"New file: {data.as_posix()}")
-        else:
+        elif text is None:
             print(f"No new file: {data.as_posix()}, input is not yet available.")
             print(f"Do not try again before day {args.day}. This is pointless.")
+        else:
+            print(f"No new file: {data.as_posix()}, use --download to get it.")
 
 
 if __name__ == "__main__":
