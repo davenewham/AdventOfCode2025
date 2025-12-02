@@ -1,19 +1,20 @@
 """
-Prepare for a new day of AoC.
+Prepare for a new day of AoC 2025.
 (1) Create a dayNN.py file for the code.
 (2) Download puzzle input and create a dayNN.txt file.
 """
 import argparse
 import os
-from argparse import BooleanOptionalAction
 from pathlib import Path
 from string import Template
 
 import requests
 from dotenv import load_dotenv
 
+YEAR = 2025
+
 template = Template('''"""
-AdventOfCode 2025 Day $day
+AdventOfCode $year Day $day
 """
 from pathlib import Path
 
@@ -34,7 +35,7 @@ if __name__ == "__main__":
     main()
 ''')
 
-url_template = Template('https://adventofcode.com/2025/day/$day/input')
+url_template = Template('https://adventofcode.com/$year/day/$day/input')
 
 
 load_dotenv()
@@ -65,7 +66,7 @@ def main() -> None:
     if prog.exists():
         print(f"File exists: {prog.as_posix()}, did not overwrite")
     else:
-        prog.write_text(template.substitute(day=args.day))
+        prog.write_text(template.substitute(day=args.day, year=YEAR))
         print(f"New file: {prog.as_posix()}")
 
     data = prog.with_suffix(".txt")
@@ -74,7 +75,7 @@ def main() -> None:
         print(f"File exists: {data.as_posix()}, did not overwrite")
     else:
         if args.download:
-            text = download(url_template.substitute(day=args.day))
+            text = download(url_template.substitute(day=args.day, year=YEAR))
         else:
             text = ""
         if text and text != "":

@@ -41,14 +41,14 @@ def solve(id_ranges: list[tuple[int, int]], pattern: re.Pattern) -> int:
     return answer
 
 
-def main(puzzle_input: str) -> None:
+def main() -> None:
     example_ranges = parse(example[0])
 
     part1pattern = re.compile(r"([1-9][0-9]*)\1")
 
     assert solve(example_ranges, part1pattern) == example[1]
 
-    text = Path(puzzle_input).read_text()
+    text = Path(__file__).with_suffix(".txt").read_text()
     puzzle_ranges = parse(text)
 
     start = time.perf_counter()
@@ -68,4 +68,4 @@ def main(puzzle_input: str) -> None:
     print(f"Part 2 solution: {part2solution}, runtime = {end - start:.3f} s")
 
 if __name__ == "__main__":
-    main("day02.txt")
+    main()

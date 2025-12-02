@@ -48,11 +48,11 @@ def solve(rotations: list[int]) -> tuple[int, int]:
     return zero_count, zero_transits
 
 
-def main(puzzle_input: str) -> None:
+def main() -> None:
     rotations = parse(example[0])
     part1test, part2test = solve(rotations)
 
-    rotations = parse(Path(puzzle_input).read_text())
+    rotations = parse(Path(__file__).with_suffix(".txt").read_text())
     start = time.perf_counter()
     part1solution, part2solution = solve(rotations)
     end = time.perf_counter()
@@ -66,4 +66,4 @@ def main(puzzle_input: str) -> None:
 
 
 if __name__ == "__main__":
-    main("day01.txt")
+    main()
