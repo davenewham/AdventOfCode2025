@@ -1,3 +1,4 @@
+import time
 from pathlib import Path
 
 example = """L68
@@ -52,12 +53,16 @@ def main(puzzle_input: str) -> None:
     part1test, part2test = solve(rotations)
 
     rotations = parse(Path(puzzle_input).read_text())
+    start = time.perf_counter()
     part1solution, part2solution = solve(rotations)
+    end = time.perf_counter()
 
     if part1test == example[1]:
         print("Part 1 solution:", part1solution)
     if part2test == example[2]:
         print("Part 2 solution:", part2solution)
+
+    print(f"runtime <= {(end - start) * 1000:.0f} ms")
 
 
 if __name__ == "__main__":
