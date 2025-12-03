@@ -11,7 +11,7 @@ example = """987654321111111
 818181911112111""".splitlines(), 357, 3121910778619
 
 
-def find_max_multi_joltage(segment: str, size: int) -> deque[int]:
+def find_max(segment: str, size: int) -> deque[int]:
     result = deque()
     if size == 0 or not segment:
         return result
@@ -25,12 +25,12 @@ def find_max_multi_joltage(segment: str, size: int) -> deque[int]:
     left, right = segment.split(str(pivot), 1)
     result.append(pivot)
 
-    result.extend(find_max_multi_joltage(right, size - 1))
+    result.extend(find_max(right, size - 1))
 
     if len(result) >= size:
         return result
 
-    left_result = find_max_multi_joltage(left, size - len(result))
+    left_result = find_max(left, size - len(result))
     result.extendleft(reversed(left_result))
 
     return result
@@ -40,7 +40,7 @@ def find_max_multi_joltage(segment: str, size: int) -> deque[int]:
 def solve(banks: list[str], size: int = 2) -> int:
     answer = 0
     for bank in banks:
-        answer += int("".join(map(str, find_max_multi_joltage(bank, size))))
+        answer += int("".join(map(str, find_max(bank, size))))
     return answer
 
 
