@@ -16,20 +16,21 @@ YEAR = 2025
 template = Template('''"""
 AdventOfCode $year Day $day
 """
+import time
 from pathlib import Path
 
 example = """
-""", 0, 0
+""", -1, -1
 
 
-def solve() -> int:
-    ...
+def solve(puzzle_input) -> int:
+    return -1
 
 
 def main() -> None:
     assert solve(example[0]) == example[1]
 
-    puzzle_input = Path(__file__).with_suffix(".txt").read_text().splitlines()
+    puzzle_input = Path(__file__).with_suffix(".txt").read_text()
 
     start = time.perf_counter()
     answer = solve(puzzle_input)
