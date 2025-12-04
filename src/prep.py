@@ -15,6 +15,7 @@ YEAR = 2025
 
 template = Template('''"""
 AdventOfCode $year Day $day
+https://adventofcode.com/$year/day/$day
 """
 import time
 from pathlib import Path
