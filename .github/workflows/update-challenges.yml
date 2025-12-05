@@ -1,6 +1,7 @@
 name: update-latest-challenge
 run-name: update the latest challenge from AoC
 on:
+  workflow_dispatch:
   schedule:
     - cron: "15 0 1-12 12 *"
 permissions:
