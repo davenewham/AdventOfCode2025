@@ -5,6 +5,7 @@ https://adventofcode.com/2025/day/5
 import re
 import time
 from collections import deque
+from collections.abc import Callable
 from operator import itemgetter
 from pathlib import Path
 
@@ -20,9 +21,11 @@ example = """3-5
 17
 32""", 3, 14
 
+type SortableSequence = list | deque
 type Bounds = tuple[int, int]  # (lower, upper)
-type IngredientRanges = list[Bounds]  # all ingredient ranges, given by their including bounds
+type IngredientRanges = SortableSequence[Bounds]  # ingredient ranges
 type IngredientList = list[int]  # a list of ingredient IDs
+type RangeMerger = Callable[[IngredientRanges], IngredientRanges]
 
 
 def parse(database: str) -> tuple[IngredientRanges, IngredientList]:
@@ -49,7 +52,7 @@ def solve_part1(ingredient_ranges: IngredientRanges, ingredients: IngredientList
     return count
 
 
-def merge_ranges(ranges: list[tuple[int, int]]) -> list[tuple[int, int]]:
+def merge(ranges: IngredientRanges) -> IngredientRanges:
     if not ranges:
         return []
 
@@ -70,15 +73,9 @@ def merge_ranges(ranges: list[tuple[int, int]]) -> list[tuple[int, int]]:
     return merged
 
 
-def solve_part2(ingredient_ranges: IngredientRanges) -> int:
-    merged = merge_ranges(ingredient_ranges)
-    answer = sum(b - a + 1 for a, b in merged)
-    return answer
-
-
-def solve_part2_ugly_version(ingredient_ranges: IngredientRanges) -> int:
+def ugly_merge(ranges: IngredientRanges) -> IngredientRanges:
     right = deque()
-    right.extend(sorted(ingredient_ranges, key=itemgetter(0)))
+    right.extend(sorted(ranges, key=itemgetter(0)))
     left = deque()
     while True:
         if len(right) == 0:  # all work done
@@ -89,14 +86,17 @@ def solve_part2_ugly_version(ingredient_ranges: IngredientRanges) -> int:
         a, b = left[-1], right[0]
         if a[1] < b[0]:
             left.append(right.popleft())
-        elif a == b:
-            right.popleft()
         elif b[0] <= a[1] <= b[1]:
             left[-1] = a[0], b[1]
             right.popleft()
         else:
             right.popleft()
-    answer = sum(b - a + 1 for a, b in left)
+    return left
+
+
+def solve_part2(ingredient_ranges: IngredientRanges, mergefunc: RangeMerger) -> int:
+    merged = mergefunc(ingredient_ranges)
+    answer = sum(b - a + 1 for a, b in merged)
     return answer
 
 
@@ -114,11 +114,11 @@ def main() -> None:
     end = time.perf_counter()
     print(f"Part 1 solution: {answer}, runtime = {end - start:.3f} s")
 
-    if solve_part2(ex_ranges) != example[2]:
+    if solve_part2(ex_ranges, merge) != example[2]:
         print("Part 2 failed")
 
     start = time.perf_counter()
-    answer = solve_part2_ugly_version(ingredient_ranges)
+    answer = solve_part2(ingredient_ranges, merge)
     end = time.perf_counter()
     print(f"Part 2 solution: {answer}, runtime = {end - start:.3f} s")
 
